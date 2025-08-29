@@ -1,4 +1,4 @@
-Scandiweb test
+# Scandiweb test
 
 This is the github repo for my attempt at the Scandiweb junior full-stack dev position. The website is hosted on a Digital Ocean vm. There were some parts that felt off on my part while making the project, but they aren't anything major that couldn't be fixed on request, for example:
 
