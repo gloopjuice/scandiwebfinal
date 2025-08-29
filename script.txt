@@ -1,0 +1,89 @@
+set -euo pipefail
+
+APP_DIR="/var/www/scandiweb"
+REPO_DIR="$APP_DIR"
+FRONTEND_DIR="$APP_DIR/frontend"
+BACKEND_DIR="$APP_DIR/backend"
+APACHE_SITE="/etc/apache2/sites-available/scandiweb.conf"
+
+apt-get update -y
+apt-get upgrade -y
+
+apt-get install -y git curl ca-certificates gnupg build-essential rsync unzip
+
+apt-get install -y apache2 libapache2-mod-php php php-cli php-mbstring php-xml php-mysql php-curl php-json
+
+phpenmod pdo_mysql || true
+systemctl restart apache2
+
+if ! command -v composer >/dev/null 2>&1; then
+  curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+fi
+
+if ! command -v node >/dev/null 2>&1 || [[ "$(node -v)" != v20* ]]; then
+  curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+  apt-get install -y nodejs
+fi
+
+mkdir -p "$APP_DIR"
+chown -R "$SUDO_USER":"$SUDO_USER" "$APP_DIR" || true
+
+if [ -f "./frontend/package.json" ] && [ -f "./backend/public/index.php" ]; then
+  rsync -a --delete ./ "$REPO_DIR"/
+else
+  exit 1
+fi
+
+cd "$FRONTEND_DIR"
+npm ci --legacy-peer-deps || npm install --legacy-peer-deps
+npm run build
+
+cd "$BACKEND_DIR"
+composer install --no-dev --optimize-autoloader
+
+cat > "$APACHE_SITE" << 'APACHECONF'
+<VirtualHost *:80>
+    ServerName 46.101.118.64
+    ServerAdmin webmaster@localhost
+
+    DocumentRoot /var/www/scandiweb/frontend/build
+    <Directory /var/www/scandiweb/frontend/build>
+        Options -Indexes
+        AllowOverride None
+        Require all granted
+        FallbackResource /index.html
+    </Directory>
+
+    Alias /backend/public/ /var/www/scandiweb/backend/public/
+    <Directory /var/www/scandiweb/backend/public>
+        AllowOverride All
+        Require all granted
+    </Directory>
+
+    <Directory /var/www/scandiweb/frontend/build>
+        Options FollowSymLinks
+        AllowOverride None
+        Require all granted
+
+        <IfModule mod_rewrite.c>
+            RewriteEngine On
+            RewriteCond %{REQUEST_URI} ^/api/ [NC]
+            RewriteRule ^api/.* /backend/public/index.php [QSA,L]
+        </IfModule>
+    </Directory>
+
+    ErrorLog ${APACHE_LOG_DIR}/scandiweb_error.log
+    CustomLog ${APACHE_LOG_DIR}/scandiweb_access.log combined
+</VirtualHost>
+APACHECONF
+
+a2dissite 000-default.conf || true
+a2ensite scandiweb.conf
+systemctl reload apache2
+
+chown -R www-data:www-data "$APP_DIR/frontend/build"
+chown -R www-data:www-data "$APP_DIR/backend"
+find "$APP_DIR" -type d -exec chmod 755 {} \;
+find "$APP_DIR" -type f -exec chmod 644 {} \;
+
+echo "Setup complete! Your website should be accessible at http://46.101.118.64"

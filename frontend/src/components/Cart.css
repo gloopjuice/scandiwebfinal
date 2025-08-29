@@ -1,0 +1,314 @@
+/* Cart Overlay */
+.cart-overlay {
+    position: fixed;
+    top: 0; /* Cover from the very top; header will sit above via z-index */
+    left: 0;
+    width: 100%;
+    height: 100%; /* Cover entire viewport */
+    background: rgba(57, 55, 72, 0.15);
+    backdrop-filter: blur(2px);
+    z-index: 1000;
+    transition: background-color 0.3s ease;
+}
+
+/* Cart Panel */
+.cart-panel {
+    position: fixed;
+    top: 78px;
+    right: 101px;
+    width: 325px;
+    max-height: calc(100vh - 100px);
+    background: #FFFFFF;
+    z-index: 1001;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 1px 3px 8px -1px rgba(0, 0, 0, 0.39);
+    overflow: hidden;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    transform: translateX(0);
+    opacity: 1;
+}
+
+/* Ensure panel sizing accounts for padding/borders and clip overflow */
+.cart-panel { box-sizing: border-box; overflow: hidden; }
+
+/* Left align headings and item text */
+.cart-header, .cart-title { text-align: left; }
+.cart-item-title, .cart-item-price, .cart-item-attribute-name { text-align: left; }
+
+/* Items container keeps inner padding but no internal scroll */
+.cart-items { padding: 0 16px; }
+
+/* Layout: left info flexes, right (qty+image) fixed width; avoid overflow */
+.cart-item-content { justify-content: space-between; }
+.cart-item-left { flex: 1 1 auto; min-width: 0; }
+.cart-item-info { width: 100%; }
+
+/* Fix right column width to match Figma: 24 (qty) + 8 gap + 121 image */
+.cart-item-right { flex: 0 0 153px; width: 153px; }
+
+/* Prevent images from bleeding outside */
+.cart-item-image {
+    width: 121px;
+    height: 164px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8f8f8; /* Light background for transparent images */
+}
+
+.cart-item-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Maintain aspect ratio and fit within container */
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+/* Cart Header */
+.cart-header {
+    width: 100%;
+    padding: 32px 16px 0 16px;
+    flex-shrink: 0;
+    max-width: 293px; /* Match Figma: 325px - 32px padding */
+}
+
+.cart-title {
+    font-family: 'Raleway', sans-serif;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 160%;
+    color: #1D1F22;
+    margin: 0;
+    width: 100%;
+    word-wrap: break-word;
+}
+
+.cart-items {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    width: 100%;
+    padding: 0 16px;
+    flex: 1;
+    overflow-y: auto;
+    max-height: calc(100vh - 220px);
+}
+
+.cart-items::-webkit-scrollbar { width: 6px; }
+.cart-items::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 3px; }
+.cart-items::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 3px; }
+.cart-items::-webkit-scrollbar-thumb:hover { background: #a8a8a8; }
+
+.cart-item { width: 100%; }
+
+.cart-item-content {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 8px;
+    width: 100%;
+    max-width: 293px; 
+}
+
+.cart-item-left {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 164px;
+    flex-shrink: 0;
+}
+
+.cart-item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 136px;
+}
+
+.cart-item-title {
+    font-family: 'Raleway', sans-serif;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 18px;
+    line-height: 160%;
+    color: #1D1F22;
+    margin: 0;
+    white-space: normal; 
+    word-break: break-word; 
+    width: 100%;
+    max-width: 136px;
+}
+
+.cart-item-price {
+    font-family: 'Raleway', sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 160%;
+    color: #1D1F22;
+    width: 100%;
+    max-width: 136px; 
+}
+
+.cart-item-attribute { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 8px; 
+    width: 100%; 
+    max-width: 136px; 
+}
+
+.cart-item-attribute-name { 
+    font-family: 'Raleway', sans-serif; 
+    font-weight: 400; 
+    font-size: 14px; 
+    line-height: 16px; 
+    color: #1D1F22; 
+    width: 100%;
+    word-wrap: break-word;
+}
+
+.cart-item-attribute-items { 
+    display: flex; 
+    flex-direction: row; 
+    gap: 8px; 
+    flex-wrap: wrap;
+    max-width: 136px;
+}
+
+.cart-attribute-item {
+    width: 24px; height: 24px; border: 1px solid #1D1F22;
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+    transition: all 0.2s ease; box-sizing: border-box;
+}
+.cart-attribute-item--color { border: 1px solid transparent; }
+.cart-attribute-item--text { background: rgba(255, 255, 255, 0.2); }
+.cart-attribute-item--selected { background: #1D1F22; color: #FFFFFF; }
+.cart-attribute-item--color.cart-attribute-item--selected { background: initial; border-color: #5ECE7B; position: relative; }
+.cart-attribute-item--color.cart-attribute-item--selected::after { content: ''; position: absolute; top: -1px; left: -1px; right: -1px; bottom: -1px; border: 1px solid #5ECE7B; }
+.cart-attribute-text { font-family: 'Source Sans Pro', sans-serif; font-weight: 400; font-size: 14px; line-height: 160%; color: inherit; }
+
+.cart-attribute-text {
+    font-family: 'Source Sans Pro', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 160%;
+    color: inherit;
+    display: inline-block;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.cart-attribute-text--small { font-size: 12px; }
+.cart-attribute-text--xsmall { font-size: 10px; }
+
+.cart-attribute-item { overflow: hidden; }
+
+.cart-item-right {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    align-items: stretch;
+    flex: 0 0 153px;
+    width: 153px;
+}
+
+.cart-item-right {
+    flex: 0 0 auto;
+    width: auto;
+    max-width: 129px;
+}
+
+.cart-item-quantity {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    width: 24px; 
+    flex-shrink: 0;
+}
+
+.cart-quantity-btn {
+    width: 24px; height: 24px; border: 1px solid #1D1F22; background: transparent; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; font-size: 18px; color: #1D1F22; transition: all 0.2s ease;
+}
+.cart-quantity-btn:hover { background: #1D1F22; color: #FFFFFF; }
+.cart-quantity-value { font-family: 'Raleway', sans-serif; font-weight: 400; font-size: 16px; line-height: 160%; color: #1D1F22; }
+
+.cart-footer {
+    display: flex; 
+    flex-direction: column; 
+    gap: 12px; 
+    width: 100%;
+    padding: 0 16px 32px 16px; 
+    flex-shrink: 0; 
+    margin-top: auto; 
+    padding-top: 16px;
+    max-width: 293px;
+}
+
+.cart-total { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    width: 100%; 
+    min-width: 0;
+}
+
+.cart-total-label { 
+    font-family: 'Roboto', sans-serif; 
+    font-weight: 500; 
+    font-size: 16px; 
+    line-height: 18px; 
+    color: #1D1F22; 
+    flex-shrink: 0;
+}
+
+.cart-total-price { 
+    font-family: 'Raleway', sans-serif; 
+    font-weight: 700; 
+    font-size: 16px; 
+    line-height: 160%; 
+    color: #1D1F22; 
+    flex-shrink: 0;
+    text-align: right;
+    min-width: 0;
+}
+
+.cart-actions { 
+    width: 100%; 
+    max-width: 293px;
+}
+
+.cart-checkout-btn { 
+    width: 100%; 
+    height: 43px; 
+    background: #5ECE7B; 
+    border: none; 
+    font-family: 'Raleway', sans-serif; 
+    font-weight: 600; 
+    font-size: 14px; 
+    line-height: 120%; 
+    text-transform: uppercase; 
+    color: #FFFFFF; 
+    cursor: pointer; 
+    transition: background-color 0.2s ease; 
+    max-width: 292px; 
+}
+.cart-checkout-btn:hover { background: #4bbf6a; }
+
+.cart-empty { text-align: center; padding: 40px 0; color: #8D8F9A; font-family: 'Raleway', sans-serif; }
+
+@media (max-width: 768px) {
+    .cart-panel { right: 16px; left: 16px; width: auto; top: 80px; }
+    .cart-item-content { flex-direction: column; gap: 16px; }
+    .cart-item-left, .cart-item-right { width: 100%; }
+    .cart-item-right { flex-direction: row; justify-content: space-between; align-items: center; }
+    .cart-item-quantity { flex-direction: row; gap: 16px; width: auto; }
+    .cart-item-image { width: 80px; height: 100px; }
+}

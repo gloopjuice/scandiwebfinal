@@ -1,0 +1,132 @@
+.item-page {
+    width: 100%;
+    min-height: 100vh;
+    background-color: white;
+}
+
+.item-page__container {
+    max-width: 1238px;
+    margin: 0 auto;
+    padding: 80px 20px 40px 20px;
+}
+
+.item-page__content {
+    display: flex;
+    gap: 100px;
+    align-items: flex-start;
+}
+
+/* Loading State */
+.item-page__loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    gap: 20px;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #5ECE7B;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.item-page__loading p {
+    font-family: 'Raleway', sans-serif;
+    font-size: 16px;
+    color: #1D1F22;
+    margin: 0;
+}
+
+/* Error State */
+.item-page__error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    gap: 20px;
+    text-align: center;
+}
+
+.item-page__error p {
+    font-family: 'Raleway', sans-serif;
+    font-size: 16px;
+    color: #1D1F22;
+    margin: 0;
+}
+
+.item-page__retry-button {
+    padding: 12px 24px;
+    background-color: #5ECE7B;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-family: 'Raleway', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: background-color 0.2s ease;
+}
+
+.item-page__retry-button:hover {
+    background-color: #4CAF66;
+}
+
+/* Not Found State */
+.item-page__not-found {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    text-align: center;
+}
+
+.item-page__not-found p {
+    font-family: 'Raleway', sans-serif;
+    font-size: 18px;
+    color: #1D1F22;
+    margin: 0;
+}
+
+/* Responsive design */
+@media (max-width: 1200px) {
+    .item-page__container {
+        padding: 60px 15px 30px 15px;
+    }
+    
+    .item-page__content {
+        gap: 60px;
+    }
+}
+
+@media (max-width: 768px) {
+    .item-page__container {
+        padding: 40px 15px 20px 15px;
+    }
+    
+    .item-page__content {
+        flex-direction: column;
+        gap: 40px;
+    }
+}
+
+@media (max-width: 480px) {
+    .item-page__container {
+        padding: 20px 10px 15px 10px;
+    }
+    
+    .item-page__content {
+        gap: 30px;
+    }
+}

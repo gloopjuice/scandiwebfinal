@@ -1,0 +1,11 @@
+{
+  "name": "scandiweb-backend",
+  "version": "1.0.0",
+  "description": "Scandiweb Backend API",
+  "scripts": {
+    "start": "php -S localhost:8000 -t public",
+    "dev": "php -S localhost:8000 -t public"
+  },
+  "author": "",
+  "license": "ISC"
+}
